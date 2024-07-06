@@ -8,7 +8,8 @@ import {
   Inject,
   HttpStatus,
   HttpException,
-  Param
+  Param,
+  Logger
 } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import { ClientProxy } from '@nestjs/microservices'
@@ -40,6 +41,8 @@ export class UsersController {
     @Inject('USER_SERVICE') private readonly userServiceClient: ClientProxy
   ) {}
 
+  private readonly logger = new Logger(UsersController.name)
+
   @Get()
   @Authorization(true)
   @ApiOkResponse({
@@ -68,6 +71,8 @@ export class UsersController {
     type: CreateUserResponseDto
   })
   public async createUser(@Body() userRequest: CreateUserDto): Promise<CreateUserResponseDto> {
+    this.logger.log(`Creating user with details: ${JSON.stringify(userRequest)}`)
+
     const createUserResponse: IServiceUserCreateResponse = await firstValueFrom(
       this.userServiceClient.send('user_create', userRequest)
     )
