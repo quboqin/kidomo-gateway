@@ -71,8 +71,6 @@ export class UsersController {
     type: CreateUserResponseDto
   })
   public async createUser(@Body() userRequest: CreateUserDto): Promise<CreateUserResponseDto> {
-    this.logger.log(`Creating user with details: ${JSON.stringify(userRequest)}`)
-
     const createUserResponse: IServiceUserCreateResponse = await firstValueFrom(
       this.userServiceClient.send('user_create', userRequest)
     )
